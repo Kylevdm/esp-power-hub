@@ -1,0 +1,505 @@
+sensor:
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_pack_voltage
+    name: "${pack_name} Voltage"
+    address: 0x1000
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_pack_current
+    name: "${pack_name} Current"
+    address: 0x1001
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "A"
+    device_class: current
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_remaining_capacity
+    name: "${pack_name} Remaining Capacity"
+    address: 0x1002
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "Ah"
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_total_capacity
+    name: "${pack_name} Total Capacity"
+    address: 0x1003
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "Ah"
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_total_discharge_capacity
+    name: "${pack_name} Total Discharge Capacity"
+    address: 0x1004
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "Ah"
+    state_class: measurement
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_soc
+    name: "${pack_name} SOC"
+    address: 0x1005
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "%"
+    device_class: battery
+    state_class: measurement
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_soh
+    name: "${pack_name} SOH"
+    address: 0x1006
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "%"
+    state_class: measurement
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cycles
+    name: "${pack_name} Cycles"
+    address: 0x1007
+    register_type: read
+    value_type: U_WORD
+    state_class: total_increasing
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_avg_cell_voltage
+    name: "${pack_name} Average Cell Voltage"
+    address: 0x1008
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_avg_cell_temperature
+    name: "${pack_name} Average Cell Temperature"
+    address: 0x1009
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_max_cell_voltage
+    name: "${pack_name} Max Cell Voltage"
+    address: 0x100A
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_min_cell_voltage
+    name: "${pack_name} Min Cell Voltage"
+    address: 0x100B
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_max_cell_temperature
+    name: "${pack_name} Max Cell Temperature"
+    address: 0x100C
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_min_cell_temperature
+    name: "${pack_name} Min Cell Temperature"
+    address: 0x100D
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  # Individual cell voltages
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_01
+    name: "${pack_name} Cell 1"
+    address: 0x1100
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_02
+    name: "${pack_name} Cell 2"
+    address: 0x1101
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_03
+    name: "${pack_name} Cell 3"
+    address: 0x1102
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_04
+    name: "${pack_name} Cell 4"
+    address: 0x1103
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_05
+    name: "${pack_name} Cell 5"
+    address: 0x1104
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_06
+    name: "${pack_name} Cell 6"
+    address: 0x1105
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_07
+    name: "${pack_name} Cell 7"
+    address: 0x1106
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_08
+    name: "${pack_name} Cell 8"
+    address: 0x1107
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_09
+    name: "${pack_name} Cell 9"
+    address: 0x1108
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_10
+    name: "${pack_name} Cell 10"
+    address: 0x1109
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_11
+    name: "${pack_name} Cell 11"
+    address: 0x110A
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_12
+    name: "${pack_name} Cell 12"
+    address: 0x110B
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_13
+    name: "${pack_name} Cell 13"
+    address: 0x110C
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_14
+    name: "${pack_name} Cell 14"
+    address: 0x110D
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_15
+    name: "${pack_name} Cell 15"
+    address: 0x110E
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_cell_16
+    name: "${pack_name} Cell 16"
+    address: 0x110F
+    register_type: read
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  # Temperatures
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_temp_1
+    name: "${pack_name} Temperature 1"
+    address: 0x1110
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_temp_2
+    name: "${pack_name} Temperature 2"
+    address: 0x1111
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_temp_3
+    name: "${pack_name} Temperature 3"
+    address: 0x1112
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_temp_4
+    name: "${pack_name} Temperature 4"
+    address: 0x1113
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_env_temperature
+    name: "${pack_name} Environment Temperature"
+    address: 0x1118
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${pack_id}
+    id: ${pack_prefix}_mosfet_temperature
+    name: "${pack_name} MOSFET Temperature"
+    address: 0x1119
+    register_type: read
+    value_type: S_WORD
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - offset: -2731.5
+      - multiply: 0.1
