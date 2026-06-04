@@ -19,14 +19,16 @@ void ChargeControllerComponent::setup() {
   for (auto &pack : this->packs_) {
     pack.last_update_ms = 0;
 
-    pack.min_cell_voltage->add_on_state_callback([this, &pack](float val) {
+    auto update_cb = [this, &pack](float val) {
       if (!std::isnan(val))
         pack.last_update_ms = millis();
-    });
-    pack.pack_voltage->add_on_state_callback([this, &pack](float val) {
-      if (!std::isnan(val))
-        pack.last_update_ms = millis();
-    });
+    };
+    pack.min_cell_voltage->add_on_state_callback(update_cb);
+    pack.max_cell_voltage->add_on_state_callback(update_cb);
+    pack.pack_voltage->add_on_state_callback(update_cb);
+    pack.pack_current->add_on_state_callback(update_cb);
+    pack.soc->add_on_state_callback(update_cb);
+    pack.max_temperature->add_on_state_callback(update_cb);
   }
 
   if (this->rect_voltage_sensor_ != nullptr) {
@@ -35,6 +37,9 @@ void ChargeControllerComponent::setup() {
         this->rect_last_update_ms_ = millis();
     });
   }
+
+  this->set_rectifier_voltage_(DEFAULT_FLOAT_VOLTAGE);
+  this->set_rectifier_current_(10.0f);
 
   ESP_LOGI(TAG, "Charge controller initialized with %d packs, relay OPEN", this->packs_.size());
   this->publish_state_();
@@ -54,9 +59,7 @@ void ChargeControllerComponent::loop() {
 
   this->check_safety_();
 
-  if (this->state_ != ChargeState::ALARM) {
-    this->update_state_machine_();
-  }
+  this->update_state_machine_();
 
   if (millis() - this->last_rectifier_command_ms_ > RECTIFIER_COMMAND_INTERVAL_MS) {
     this->last_rectifier_command_ms_ = millis();
@@ -225,11 +228,27 @@ void ChargeControllerComponent::update_state_machine_() {
       float avg_soc = this->get_avg_soc_all_packs_();
       float rebulk_soc = this->get_param_(this->rebulk_soc_num_, DEFAULT_REBULK_SOC);
 
-      if (!std::isnan(avg_soc) && avg_soc < rebulk_soc) {
+      if (std::isnan(avg_soc))
+        break;
+
+      if (avg_soc < rebulk_soc) {
+        float bulk_v = this->get_param_(this->bulk_voltage_num_, DEFAULT_BULK_VOLTAGE);
+        float max_i = this->get_param_(this->max_charge_current_num_, DEFAULT_MAX_CHARGE_CURRENT);
+        this->set_rectifier_voltage_(bulk_v);
+        this->set_rectifier_current_(max_i);
         this->set_rectifier_dc_(true);
         this->close_relay_();
         this->transition_to_(ChargeState::BULK);
         ESP_LOGI(TAG, "Starting charge cycle (SOC: %.0f%%, threshold: %.0f%%)", avg_soc, rebulk_soc);
+      } else {
+        float float_v = this->get_param_(this->float_voltage_num_, DEFAULT_FLOAT_VOLTAGE);
+        float max_i = this->get_param_(this->max_charge_current_num_, DEFAULT_MAX_CHARGE_CURRENT);
+        this->set_rectifier_voltage_(float_v);
+        this->set_rectifier_current_(max_i);
+        this->set_rectifier_dc_(true);
+        this->close_relay_();
+        this->transition_to_(ChargeState::FLOAT);
+        ESP_LOGI(TAG, "Starting float maintenance (SOC: %.0f%%)", avg_soc);
       }
       break;
     }
@@ -267,8 +286,10 @@ void ChargeControllerComponent::update_state_machine_() {
       if (this->rect_current_sensor_ != nullptr && this->rect_current_sensor_->has_state())
         rect_current = this->rect_current_sensor_->state;
 
-      bool current_tapered = !std::isnan(rect_current) && rect_current <= absorb_tail;
-      bool time_expired = (millis() - this->state_enter_time_) > (uint32_t)(absorb_max_time * 1000.0f);
+      uint32_t time_in_absorb = millis() - this->state_enter_time_;
+      bool current_tapered = !std::isnan(rect_current) && rect_current <= absorb_tail
+                             && time_in_absorb > ABSORB_SETTLE_MS;
+      bool time_expired = time_in_absorb > (uint32_t)(absorb_max_time * 1000.0f);
 
       if (current_tapered || time_expired) {
         this->transition_to_(ChargeState::FLOAT);

@@ -174,6 +174,7 @@ class ChargeControllerComponent : public Component {
   static constexpr float DEFAULT_ALARM_TEMP_HIGH = 45.0f;
   static constexpr float DEFAULT_COMMS_TIMEOUT = 30.0f;
   static constexpr uint32_t BOOT_GRACE_PERIOD_MS = 60000;
+  static constexpr uint32_t ABSORB_SETTLE_MS = 60000;
   static constexpr uint32_t PUBLISH_INTERVAL_MS = 1000;
   static constexpr uint32_t RECTIFIER_COMMAND_INTERVAL_MS = 5000;
 

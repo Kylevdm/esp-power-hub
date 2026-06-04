@@ -29,4 +29,5 @@ async def to_code(config):
 
     if charging_enabled := config.get(CONF_CHARGING_ENABLED):
         sw = await switch.new_switch(charging_enabled)
+        await cg.register_component(sw, charging_enabled)
         cg.add(parent.set_charging_switch(sw))

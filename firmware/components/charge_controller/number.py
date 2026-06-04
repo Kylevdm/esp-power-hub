@@ -138,5 +138,7 @@ async def to_code(config):
                 max_value=cfg["max"],
                 step=cfg["step"],
             )
+            await cg.register_component(num, conf)
             cg.add(num.set_initial_value(cfg["default"]))
+            cg.add(num.set_restore_value(True))
             cg.add(getattr(parent, cfg["setter"])(num))
